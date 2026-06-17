@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Botiquín">
+<meta name="theme-color" content="#1D9E75">
+<title>Registro Antibióticos</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --green:#1D9E75;--green-dark:#0F6E56;--green-light:#E1F5EE;--green-text:#0F6E56;
+  --amber:#EF9F27;--amber-light:#FAEEDA;--amber-text:#854F0B;
+  --red:#E24B4A;--red-light:#FCEBEB;--red-text:#A32D2D;
+  --gray:#888780;--gray-light:#F1EFE8;
+  --bg:#F8F8F6;--card:#FFFFFF;--border:#E0DED8;
+  --text:#1A1A18;--text2:#6B6A66;--text3:#9E9D99;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;}
+
+/* HEADER */
+.header{background:var(--green);color:#fff;padding:16px 16px 12px;position:sticky;top:0;z-index:100;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.header h1{font-size:17px;font-weight:600;letter-spacing:-0.3px;}
+.header-sub{font-size:12px;opacity:.8;}
+.sheets-btn{background:rgba(255,255,255,.2);border:none;border-radius:var(--radius-sm);padding:6px 10px;color:#fff;font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer;text-decoration:none;}
+
+/* TABS */
+.tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:73px;z-index:99;}
+.tab{flex:1;padding:12px 4px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent;}
+.tab i{font-size:20px;}
+.tab.active{color:var(--green);border-bottom:2px solid var(--green);}
+.panel{display:none;padding:16px;}.panel.active{display:block;}
+
+/* CARDS */
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:12px;}
+.card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.card-title i{color:var(--green);font-size:18px;}
+
+/* FORM */
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500;}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:16px;background:#fff;color:var(--text);-webkit-appearance:none;appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);}
+.field textarea{resize:none;height:72px;font-size:14px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field-hint{font-size:11px;color:var(--text3);margin-top:4px;}
+
+/* CHIP */
+.chip-input-wrap{position:relative;}
+.chip-input-wrap input{padding-right:44px;}
+.chip-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;}
+.photo-btn{width:100%;padding:12px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:8px;}
+.photo-btn i{font-size:20px;color:var(--green);}
+.photo-btn input{display:none;}
+.animal-found{background:var(--green-light);border-radius:var(--radius-sm);padding:12px;margin-top:8px;}
+.animal-found .name{font-size:15px;font-weight:600;color:var(--green-dark);}
+.animal-found .meta{font-size:12px;color:var(--green-text);margin-top:2px;}
+.animal-new{background:var(--gray-light);border-radius:var(--radius-sm);padding:12px;margin-top:8px;}
+.animal-new-hint{font-size:12px;color:var(--text2);margin-bottom:10px;}
+.scanning{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);padding:8px 0;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+.preview-img{max-height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.metric{background:var(--bg);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
+.metric .val{font-size:22px;font-weight:700;color:var(--text);}
+.metric .lbl{font-size:10px;color:var(--text2);margin-top:2px;}
+.saldo-bar{height:6px;background:var(--gray-light);border-radius:3px;margin-bottom:14px;overflow:hidden;}
+.saldo-fill{height:100%;border-radius:3px;transition:width .3s;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.btn-primary:active{background:var(--green-dark);}
+.btn-secondary{width:100%;padding:12px;background:#fff;color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#fff;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+
+/* SAVE STATUS */
+.save-status{font-size:13px;display:flex;align-items:center;gap:6px;padding:10px 0;}
+.save-ok{color:var(--green-dark);}.save-err{color:var(--red-text);}.save-ing{color:var(--text2);}
+
+/* COPY BOX */
+.copy-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:12px;color:var(--text2);white-space:pre-wrap;font-family:monospace;line-height:1.6;margin-bottom:10px;}
+
+/* BOTE ROW */
+.bote-item{padding:12px 0;border-top:1px solid var(--border);}
+.bote-item:first-child{border-top:none;}
+.bote-header{display:flex;align-items:center;justify-content:space-between;}
+.bote-name{font-size:14px;font-weight:600;}
+.bote-meta{font-size:12px;color:var(--text2);margin-top:2px;}
+.bote-bar{height:4px;background:var(--gray-light);border-radius:2px;margin-top:8px;overflow:hidden;}
+.bote-bar-fill{height:100%;border-radius:2px;}
+.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-ok{background:var(--green-light);color:var(--green-text);}
+.badge-warn{background:var(--amber-light);color:var(--amber-text);}
+.badge-low{background:var(--red-light);color:var(--red-text);}
+.badge-vacio{background:var(--gray-light);color:var(--gray);}
+.btn-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 0 0 8px;line-height:1;}
+
+/* LOG ROW */
+.log-item{padding:12px 0;border-top:1px solid var(--border);}
+.log-item:first-child{border-top:none;}
+.log-header{display:flex;justify-content:space-between;align-items:start;}
+.log-animal{font-size:14px;font-weight:600;}
+.log-ml{font-size:15px;font-weight:700;color:var(--green);}
+.log-meta{font-size:12px;color:var(--text2);margin-top:3px;}
+.log-obs{font-size:12px;color:var(--text3);margin-top:4px;font-style:italic;}
+
+.empty{text-align:center;color:var(--text3);font-size:14px;padding:24px 0;}
+.sep{border:none;border-top:1px solid var(--border);margin:14px 0;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>Registro Antibióticos</h1>
+      <div class="header-sub">AMOXOIL RETARD 150 mg/ml</div>
+    </div>
+    <a class="sheets-btn" href="https://docs.google.com/spreadsheets/d/17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY/edit" target="_blank">
+      <i class="ti ti-table"></i> Sheets
+    </a>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('inyeccion')">
+    <i class="ti ti-syringe"></i> Inyección
+  </button>
+  <button class="tab" onclick="showTab('botes')">
+    <i class="ti ti-package"></i> Botes
+  </button>
+  <button class="tab" onclick="showTab('historial')">
+    <i class="ti ti-list"></i> Historial
+  </button>
+</div>
+
+<!-- INYECCIÓN -->
+<div class="panel active" id="tab-inyeccion">
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-paw"></i> Animal</div>
+
+    <div class="field">
+      <label>Nº microchip</label>
+      <div class="chip-input-wrap">
+        <input id="f-chip" type="number" inputmode="numeric" placeholder="Introduce o captura..." oninput="buscarChip(this.value)">
+        <button class="chip-clear" onclick="clearAnimal()">×</button>
+      </div>
+      <div class="field-hint" id="chip-hint"></div>
+    </div>
+
+    <label class="photo-btn">
+      <i class="ti ti-camera"></i>
+      <span id="photo-label">Capturar chip desde foto</span>
+      <input type="file" accept="image/*" capture="environment" onchange="handlePhoto(this)">
+    </label>
+
+    <div id="scanning-state" style="display:none">
+      <div class="scanning"><div class="dot"></div> Analizando imagen con IA...</div>
+    </div>
+    <img id="photo-preview" class="preview-img" style="display:none">
+
+    <div id="animal-found" class="animal-found" style="display:none">
+      <div class="name" id="af-name"></div>
+      <div class="meta" id="af-meta"></div>
+    </div>
+
+    <div id="animal-new" class="animal-new" style="display:none">
+      <div class="animal-new-hint">Animal nuevo — introduce sus datos (se guardarán)</div>
+      <div class="field"><label>Nombre</label><input id="f-animal" placeholder="Ej: Luna"></div>
+      <div class="field-row">
+        <div class="field"><label>Especie</label>
+          <select id="f-especie"><option>Perro</option><option>Gato</option><option>Otro</option></select>
+        </div>
+        <div class="field"><label>Propietario</label><input id="f-propietario" placeholder="Apellido, Nombre"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar"></i> Administración</div>
+
+    <div class="field-row">
+      <div class="field"><label>Fecha</label><input id="f-fecha" type="date"></div>
+      <div class="field"><label>Cantidad (ml)</label><input id="f-ml" type="number" inputmode="decimal" step="0.1" min="0.1" placeholder="Ej: 2.5"></div>
+    </div>
+
+    <div class="field"><label>Proceso morboso</label><input id="f-proceso" placeholder="Ej: Pioderma superficial..."></div>
+
+    <div class="field-row">
+      <div class="field"><label>Nº administración</label>
+        <select id="f-nadmin">
+          <option value="1">1ª</option>
+          <option value="2">2ª (48 h)</option>
+          <option value="3">3ª</option>
+          <option value="otro">Otra</option>
+        </select>
+      </div>
+      <div class="field"><label>Bote</label><select id="f-bote" onchange="refreshMetrics()"></select></div>
+    </div>
+
+    <div class="field"><label>Observaciones</label><textarea id="f-obs" placeholder="Ej: Buena tolerancia..."></textarea></div>
+
+    <div class="sep"></div>
+    <div class="metrics">
+      <div class="metric"><div class="val" id="m-total">—</div><div class="lbl">ml totales</div></div>
+      <div class="metric"><div class="val" id="m-usado">—</div><div class="lbl">ml usados</div></div>
+      <div class="metric"><div class="val" id="m-saldo">—</div><div class="lbl">ml restantes</div></div>
+    </div>
+    <div class="saldo-bar"><div class="saldo-fill" id="saldo-fill" style="width:100%;background:var(--green);"></div></div>
+
+    <button class="btn-primary" onclick="addEntry()"><i class="ti ti-plus"></i> Registrar inyección</button>
+    <button class="btn-secondary" onclick="clearForm()"><i class="ti ti-refresh"></i> Limpiar</button>
+
+    <div class="save-status" id="save-status" style="display:none"></div>
+  </div>
+
+  <div id="copy-card" style="display:none" class="card">
+    <div class="card-title" style="justify-content:space-between;">
+      <span><i class="ti ti-clipboard-text"></i> Texto para RAIA</span>
+      <button class="btn-sm" onclick="copyText()"><i class="ti ti-copy"></i> Copiar</button>
+    </div>
+    <div class="copy-box" id="copy-text"></div>
+  </div>
+</div>
+
+<!-- BOTES -->
+<div class="panel" id="tab-botes">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-plus"></i> Añadir bote</div>
+    <div class="field"><label>Lote</label><input id="b-lote" placeholder="Ej: A2B3C4"></div>
+    <div class="field-row">
+      <div class="field"><label>Caducidad</label><input id="b-cad" type="month"></div>
+      <div class="field"><label>Vol. total (ml)</label><input id="b-vol" type="number" value="100" min="1"></div>
+    </div>
+    <div class="field"><label>Nota (opcional)</label><input id="b-ref" placeholder="Ej: botiquín cirugía"></div>
+    <button class="btn-primary" onclick="addBote()"><i class="ti ti-plus"></i> Añadir bote</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-package"></i> Botes activos</div>
+    <div id="botes-list"><div class="empty">Sin botes registrados.</div></div>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="panel" id="tab-historial">
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between;">
+      <span><i class="ti ti-list"></i> Administraciones</span>
+      <a class="btn-sm" href="https://docs.google.com/spreadsheets/d/17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY/edit" target="_blank"><i class="ti ti-external-link"></i> Sheets</a>
+    </div>
+    <div id="log-list"><div class="empty">Sin registros todavía.</div></div>
+  </div>
+</div>
+
+<script>
+const SHEET_ID='17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY';
+const ANTHROPIC_KEY='';
+let botes=[],entries=[],animales={};
+
+document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
+
+function showTab(t){
+  ['inyeccion','botes','historial'].forEach((n,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',n===t);
+    document.getElementById('tab-'+n).classList.toggle('active',n===t);
+  });
+  if(t==='botes')renderBotes();
+  if(t==='historial')renderLog();
+}
+
+async function callClaude(messages,maxTokens,mcpServers){
+  let body={model:'claude-sonnet-4-6',max_tokens:maxTokens||500,messages};
+  if(mcpServers)body.mcp_servers=mcpServers;
+  let res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  return res.json();
+}
+
+async function handlePhoto(input){
+  if(!input.files||!input.files[0])return;
+  let file=input.files[0];
+  let previewEl=document.getElementById('photo-preview');
+  let scanEl=document.getElementById('scanning-state');
+  let labelEl=document.getElementById('photo-label');
+  let reader=new FileReader();
+  reader.onload=async function(e){
+    let dataUrl=e.target.result;
+    previewEl.src=dataUrl;previewEl.style.display='block';
+    scanEl.style.display='block';labelEl.textContent='Analizando...';
+    let base64=dataUrl.split(',')[1];
+    let mediaType=file.type||'image/jpeg';
+    try{
+      let data=await callClaude([{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+        {type:'text',text:'Extrae el número de microchip de esta imagen (pasaporte animal, lector de chip, o programa de gestión veterinaria). Normalmente son 15 dígitos numéricos. Responde ÚNICAMENTE con el número, sin espacios ni guiones. Si no lo encuentras responde exactamente: NO_ENCONTRADO'}
+      ]}],200);
+      let chip=(data.content&&data.content[0]&&data.content[0].text||'').trim();
+      scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
+      if(chip==='NO_ENCONTRADO'||!chip){
+        document.getElementById('chip-hint').textContent='No encontrado — introdúcelo manualmente.';
+      } else {
+        document.getElementById('f-chip').value=chip;
+        document.getElementById('chip-hint').textContent='✓ Capturado desde imagen';
+        buscarChip(chip);
+      }
+    }catch(e){
+      scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
+      document.getElementById('chip-hint').textContent='Error al analizar — introdúcelo manualmente.';
+    }
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+
+function buscarChip(val){
+  val=String(val).trim();
+  let found=document.getElementById('animal-found');
+  let newEl=document.getElementById('animal-new');
+  if(val.length<9){found.style.display='none';newEl.style.display='none';return;}
+  if(animales[val]){
+    let a=animales[val];
+    document.getElementById('af-name').textContent=a.nombre+' ('+a.especie+')';
+    document.getElementById('af-meta').textContent='Propietario: '+(a.propietario||'—');
+    found.style.display='block';newEl.style.display='none';
+  } else {
+    found.style.display='none';newEl.style.display='block';
+  }
+}
+
+function clearAnimal(){
+  document.getElementById('f-chip').value='';
+  document.getElementById('chip-hint').textContent='';
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('animal-found').style.display='none';
+  document.getElementById('animal-new').style.display='none';
+  ['f-animal','f-propietario'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-especie').value='Perro';
+}
+
+function addBote(){
+  let lote=document.getElementById('b-lote').value.trim();
+  let cad=document.getElementById('b-cad').value;
+  let vol=parseFloat(document.getElementById('b-vol').value)||100;
+  let ref=document.getElementById('b-ref').value.trim();
+  if(!lote){alert('Introduce el número de lote.');return;}
+  botes.push({id:Date.now(),lote,cad,vol,ref,usado:0});
+  document.getElementById('b-lote').value='';
+  document.getElementById('b-cad').value='';
+  document.getElementById('b-vol').value='100';
+  document.getElementById('b-ref').value='';
+  renderBotes();populateBoteSelect();
+  showTab('inyeccion');
+}
+
+function renderBotes(){
+  let el=document.getElementById('botes-list');
+  if(!botes.length){el.innerHTML='<div class="empty">Sin botes registrados.</div>';return;}
+  el.innerHTML=botes.map((b,i)=>{
+    let saldo=b.vol-b.usado,pct=Math.max(0,saldo/b.vol*100);
+    let cls=saldo<=0?'badge-vacio':pct>40?'badge-ok':pct>15?'badge-warn':'badge-low';
+    let lbl=saldo<=0?'Vacío':pct>40?'Disponible':pct>15?'Bajo':'Casi vacío';
+    let fill=saldo<=0?'var(--gray)':pct>40?'var(--green)':pct>15?'var(--amber)':'var(--red)';
+    return '<div class="bote-item">'+
+      '<div class="bote-header">'+
+      '<div><div class="bote-name">Lote: '+esc(b.lote)+(b.ref?' <span style="font-weight:400;color:var(--text2)">— '+esc(b.ref)+'</span>':'')+'</div>'+
+      '<div class="bote-meta">Cad: '+fmtMes(b.cad)+' · '+saldo.toFixed(1)+' / '+b.vol+' ml restantes</div></div>'+
+      '<div style="display:flex;align-items:center;gap:6px;"><span class="badge '+cls+'">'+lbl+'</span>'+
+      '<button class="btn-del" onclick="delBote('+i+')">×</button></div></div>'+
+      '<div class="bote-bar"><div class="bote-bar-fill" style="width:'+pct.toFixed(0)+'%;background:'+fill+';"></div></div>'+
+      '</div>';
+  }).join('');
+}
+
+function delBote(i){if(!confirm('¿Eliminar este bote?'))return;botes.splice(i,1);renderBotes();populateBoteSelect();}
+
+function populateBoteSelect(){
+  let sel=document.getElementById('f-bote');
+  if(!botes.length){sel.innerHTML='<option value="">— Añade un bote primero —</option>';refreshMetrics();return;}
+  sel.innerHTML=botes.map((b,i)=>'<option value="'+i+'">Lote '+esc(b.lote)+' · '+(b.vol-b.usado).toFixed(1)+' ml</option>').join('');
+  refreshMetrics();
+}
+
+function refreshMetrics(){
+  let idx=parseInt(document.getElementById('f-bote').value);
+  if(isNaN(idx)||!botes[idx]){['m-total','m-usado','m-saldo'].forEach(id=>document.getElementById(id).textContent='—');document.getElementById('saldo-fill').style.width='0%';return;}
+  let b=botes[idx],saldo=b.vol-b.usado,pct=Math.max(0,saldo/b.vol*100);
+  document.getElementById('m-total').textContent=b.vol.toFixed(1);
+  document.getElementById('m-usado').textContent=b.usado.toFixed(1);
+  document.getElementById('m-saldo').textContent=saldo.toFixed(1);
+  let fill=document.getElementById('saldo-fill');
+  fill.style.width=pct.toFixed(0)+'%';
+  fill.style.background=pct>40?'var(--green)':pct>15?'var(--amber)':'var(--red)';
+}
+
+async function saveToSheets(entry){
+  let statusEl=document.getElementById('save-status');
+  statusEl.style.display='flex';
+  statusEl.className='save-status save-ing';
+  statusEl.innerHTML='<div class="dot"></div> Guardando en Sheets...';
+  let cadFmt=entry.cad?entry.cad.split('-').reverse().slice(0,2).join('/'):'';
+  let row=[fmtDate(entry.fecha),entry.chip,entry.animal,entry.especie,entry.propietario||'','AMOXOIL RETARD 150 mg/ml',entry.lote,cadFmt,'Intramuscular',entry.ml.toFixed(1),entry.proceso||'',entry.nadmin,entry.obs||''];
+  try{
+    await callClaude([{role:'user',content:`Añade esta fila a la Google Sheet con ID "${SHEET_ID}" en la siguiente fila disponible tras los encabezados:\n${row.map((v,i)=>String.fromCharCode(65+i)+': '+v).join('\n')}\nConfirma cuando esté hecho.`}],500,[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}]);
+    statusEl.className='save-status save-ok';
+    statusEl.innerHTML='<i class="ti ti-check" style="font-size:16px"></i> Guardado en Google Sheets';
+    setTimeout(()=>statusEl.style.display='none',3000);
+  }catch(e){
+    statusEl.className='save-status save-err';
+    statusEl.innerHTML='<i class="ti ti-alert-circle" style="font-size:16px"></i> Error al guardar en Sheets';
+  }
+}
+
+async function addEntry(){
+  let chip=String(document.getElementById('f-chip').value).trim();
+  let fecha=document.getElementById('f-fecha').value;
+  let ml=parseFloat(document.getElementById('f-ml').value);
+  let proceso=document.getElementById('f-proceso').value.trim();
+  let nadmin=document.getElementById('f-nadmin').value;
+  let obs=document.getElementById('f-obs').value.trim();
+  let boteIdx=parseInt(document.getElementById('f-bote').value);
+  if(!chip||!fecha||isNaN(ml)||ml<=0){alert('Completa: chip, fecha y cantidad en ml.');return;}
+  if(isNaN(boteIdx)||!botes[boteIdx]){alert('Selecciona un bote. Añádelo en la pestaña Botes.');return;}
+  let animal,propietario,especie;
+  if(animales[chip]){
+    animal=animales[chip].nombre;propietario=animales[chip].propietario;especie=animales[chip].especie;
+  } else {
+    animal=document.getElementById('f-animal').value.trim();
+    propietario=document.getElementById('f-propietario').value.trim();
+    especie=document.getElementById('f-especie').value;
+    if(!animal){alert('Introduce el nombre del animal.');return;}
+    animales[chip]={nombre:animal,propietario,especie};
+  }
+  let b=botes[boteIdx],saldo=b.vol-b.usado;
+  if(ml>saldo+0.01){if(!confirm('Dosis ('+ml.toFixed(1)+' ml) supera el saldo ('+saldo.toFixed(1)+' ml). ¿Continuar?'))return;}
+  botes[boteIdx].usado=parseFloat((b.usado+ml).toFixed(2));
+  let adminLabel={'1':'1ª administración','2':'2ª administración (48 h)','3':'3ª administración','otro':'Administración adicional'}[nadmin]||nadmin;
+  let entry={fecha,chip,animal,propietario,especie,ml,proceso,nadmin:adminLabel,obs,lote:b.lote,cad:b.cad};
+  entries.push(entry);
+  refreshMetrics();populateBoteSelect();
+  renderCopy(entry);
+  await saveToSheets(entry);
+  clearForm();
+}
+
+function clearForm(){
+  clearAnimal();
+  ['f-ml','f-proceso','f-obs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-nadmin').value='1';
+  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
+}
+
+function renderLog(){
+  let el=document.getElementById('log-list');
+  if(!entries.length){el.innerHTML='<div class="empty">Sin registros en esta sesión.<br><br><a href="https://docs.google.com/spreadsheets/d/17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY/edit" target="_blank" style="color:var(--green)">Ver historial completo en Google Sheets</a></div>';return;}
+  el.innerHTML=[...entries].reverse().map((e,ri)=>{
+    let i=entries.length-1-ri;
+    return '<div class="log-item">'+
+      '<div class="log-header">'+
+      '<div><div class="log-animal">'+esc(e.animal)+'</div>'+
+      '<div class="log-meta">'+fmtDate(e.fecha)+' · Chip: '+esc(e.chip)+'</div>'+
+      '<div class="log-meta">Lote: '+esc(e.lote)+(e.proceso?' · '+esc(e.proceso):'')+'</div></div>'+
+      '<div style="display:flex;align-items:center;gap:6px;"><span class="log-ml">'+e.ml.toFixed(1)+' ml</span>'+
+      '<button class="btn-del" onclick="delEntry('+i+')">×</button></div></div>'+
+      (e.obs?'<div class="log-obs">'+esc(e.obs)+'</div>':'')+
+      '</div>';
+  }).join('');
+}
+
+function delEntry(i){
+  let e=entries[i];
+  let b=botes.find(b=>b.lote===e.lote);
+  if(b)b.usado=Math.max(0,parseFloat((b.usado-e.ml).toFixed(2)));
+  entries.splice(i,1);refreshMetrics();populateBoteSelect();renderLog();
+}
+
+function renderCopy(e){
+  let cadFmt=e.cad?e.cad.split('-').reverse().slice(0,2).join('/'):'—';
+  let txt=['Medicamento: AMOXOIL RETARD 150 mg/ml SUSPENSIÓN INYECTABLE','Lote: '+(e.lote||'—'),'Caducidad: '+(cadFmt||'—'),'Vía: Intramuscular','---','Animal: '+e.animal+' ('+e.especie+')'+(e.propietario?' / Propietario: '+e.propietario:''),'Microchip: '+e.chip,'Fecha: '+fmtDate(e.fecha),'Cantidad administrada: '+e.ml.toFixed(1)+' ml','Proceso morboso: '+(e.proceso||'—'),'---',e.nadmin+'. '+(e.obs||'Mismo medicamento, lote y caducidad. Sin incidencias.')].join('\n');
+  document.getElementById('copy-text').textContent=txt;
+  document.getElementById('copy-card').style.display='block';
+}
+
+function copyText(){
+  navigator.clipboard.writeText(document.getElementById('copy-text').textContent).then(()=>{
+    let b=document.querySelector('#copy-card .btn-sm');
+    b.innerHTML='<i class="ti ti-check"></i> Copiado';
+    setTimeout(()=>{b.innerHTML='<i class="ti ti-copy"></i> Copiar';},1800);
+  });
+}
+
+function fmtDate(s){if(!s)return'—';let[y,m,d]=s.split('-');return d+'/'+m+'/'+y;}
+function fmtMes(s){if(!s)return'—';let[y,m]=s.split('-');return m+'/'+y;}
+function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'—';}
+
+populateBoteSelect();
+</script>
+</body>
+</html>
