@@ -432,7 +432,7 @@ function sendWhatsApp(entry){
     +'🦠 Proceso: '+(entry.proceso||'—')+'\n'
     +'📋 '+adminLabel+'\n'
     +(entry.obs?'📝 Obs: '+entry.obs:'');
-  let url='https://wa.me/34653594635?text='+encodeURIComponent(txt);
+  let url='whatsapp://send?phone=34653594635&text='+encodeURIComponent(txt);
   let statusEl=document.getElementById('save-status');
   statusEl.style.display='flex';
   statusEl.className='save-status save-ok';
