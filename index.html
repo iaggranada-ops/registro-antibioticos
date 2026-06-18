@@ -127,6 +127,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <a class="sheets-btn" href="https://docs.google.com/spreadsheets/d/17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY/edit" target="_blank">
       <i class="ti ti-table"></i> Sheets
     </a>
+    <button class="sheets-btn" onclick="setApiKey()" title="Configurar API key"><i class="ti ti-key"></i></button>
   </div>
 </div>
 
@@ -151,7 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="field">
       <label>Nº microchip</label>
       <div class="chip-input-wrap">
-        <input id="f-chip" type="number" inputmode="numeric" placeholder="Introduce o captura..." oninput="buscarChip(this.value)">
+        <input id="f-chip" type="text" inputmode="numeric" placeholder="Introduce o captura..." oninput="buscarChip(this.value)">
         <button class="chip-clear" onclick="clearAnimal()">×</button>
       </div>
       <div class="field-hint" id="chip-hint"></div>
@@ -263,10 +264,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const SHEET_ID='17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY';
-const ANTHROPIC_KEY='';
+let ANTHROPIC_KEY=localStorage.getItem('anthropic_key')||'';
 let botes=[],entries=[],animales={};
 
 document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
+
+function setApiKey(){
+  let current=ANTHROPIC_KEY?'(ya configurada)':'(no configurada)';
+  let key=prompt('API key de Anthropic '+current+'\nsk-ant-...\n\nObtener en: console.anthropic.com → API Keys');
+  if(key&&key.trim().startsWith('sk-')){
+    ANTHROPIC_KEY=key.trim();
+    localStorage.setItem('anthropic_key',ANTHROPIC_KEY);
+    alert('✓ API key guardada. Ya puedes capturar chips por foto y guardar en Sheets.');
+  } else if(key!==null){
+    alert('La API key debe empezar por sk-');
+  }
+}
 
 function showTab(t){
   ['inyeccion','botes','historial'].forEach((n,i)=>{
@@ -278,13 +291,22 @@ function showTab(t){
 }
 
 async function callClaude(messages,maxTokens,mcpServers){
+  if(!ANTHROPIC_KEY){
+    let key=prompt('Para esta función necesitas una API key de Anthropic (sk-ant-...).\nObtenla en console.anthropic.com:');
+    if(key&&key.trim().startsWith('sk-')){ANTHROPIC_KEY=key.trim();localStorage.setItem('anthropic_key',ANTHROPIC_KEY);}
+    else throw new Error('Sin API key');
+  }
   let body={model:'claude-sonnet-4-6',max_tokens:maxTokens||500,messages};
   if(mcpServers)body.mcp_servers=mcpServers;
   let res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify(body)
   });
+  if(!res.ok){
+    if(res.status===401){ANTHROPIC_KEY='';localStorage.removeItem('anthropic_key');throw new Error('API key incorrecta');}
+    throw new Error('Error API: '+res.status);
+  }
   return res.json();
 }
 
