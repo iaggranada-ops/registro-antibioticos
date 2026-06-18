@@ -175,14 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
 
     <div id="animal-new" class="animal-new" style="display:none">
-      <div class="animal-new-hint">Animal nuevo — introduce sus datos (se guardarán)</div>
-      <div class="field"><label>Nombre</label><input id="f-animal" placeholder="Ej: Luna"></div>
-      <div class="field-row">
-        <div class="field"><label>Especie</label>
-          <select id="f-especie"><option>Perro</option><option>Gato</option><option>Otro</option></select>
-        </div>
-        <div class="field"><label>Propietario</label><input id="f-propietario" placeholder="Apellido, Nombre"></div>
-      </div>
+      <div class="animal-new-hint">Chip no registrado anteriormente — se guardará automáticamente.</div>
     </div>
   </div>
 
@@ -367,8 +360,6 @@ function clearAnimal(){
   document.getElementById('photo-preview').style.display='none';
   document.getElementById('animal-found').style.display='none';
   document.getElementById('animal-new').style.display='none';
-  ['f-animal','f-propietario'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-especie').value='Perro';
 }
 
 function addBote(){
@@ -456,13 +447,10 @@ async function addEntry(){
   if(isNaN(boteIdx)||!botes[boteIdx]){alert('Selecciona un bote. Añádelo en la pestaña Botes.');return;}
   let animal,propietario,especie;
   if(animales[chip]){
-    animal=animales[chip].nombre;propietario=animales[chip].propietario;especie=animales[chip].especie;
+    animal=animales[chip].nombre||chip;propietario=animales[chip].propietario||'';especie=animales[chip].especie||'';
   } else {
-    animal=document.getElementById('f-animal').value.trim();
-    propietario=document.getElementById('f-propietario').value.trim();
-    especie=document.getElementById('f-especie').value;
-    if(!animal){alert('Introduce el nombre del animal.');return;}
-    animales[chip]={nombre:animal,propietario,especie};
+    animal=chip;propietario='';especie='';
+    animales[chip]={nombre:chip,propietario:'',especie:''};
   }
   let b=botes[boteIdx],saldo=b.vol-b.usado;
   if(ml>saldo+0.01){if(!confirm('Dosis ('+ml.toFixed(1)+' ml) supera el saldo ('+saldo.toFixed(1)+' ml). ¿Continuar?'))return;}
