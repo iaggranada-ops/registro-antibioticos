@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RECEVET IAG">
+<title>RECEVET · IAG</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f2f4f7;color:#1a1a1a;padding-bottom:90px}
+.topbar{background:#1a7a4a;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.topbar-title{font-size:18px;font-weight:700;color:#fff}
+.topbar-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:1px}
+.tab-bar{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:61px;z-index:99;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tab{flex:1;padding:11px 4px 10px;text-align:center;font-size:11px;color:#999;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;font-weight:600;letter-spacing:.02em}
+.tab.active{color:#1a7a4a;border-bottom-color:#1a7a4a}
+.tab-icon{font-size:20px;display:block;margin-bottom:2px}
+.content{padding:14px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-title{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;color:#555;margin-bottom:5px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;color:#1a1a1a;font-size:15px;font-family:inherit;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#1a7a4a;background:#fff}
+.field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.tipo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0}
+.tipo-btn{padding:13px 8px;border-radius:13px;border:1.5px solid #e0e0e0;background:#fafafa;font-size:14px;cursor:pointer;color:#888;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600;transition:all .15s}
+.tipo-btn.active-chip{border-color:#1a7a4a;background:#e8f5ee;color:#0d5c35}
+.tipo-btn.active-nochip{border-color:#c07800;background:#fff4e0;color:#7a4500}
+.motivos-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.motivo-btn{padding:9px 14px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fafafa;font-size:13px;cursor:pointer;color:#666;transition:all .15s;user-select:none;font-weight:500}
+.motivo-btn.sel{border-color:#1a7a4a;background:#e8f5ee;color:#0d5c35;font-weight:600}
+.vet-badge{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:12px;background:#e8f5ee;font-size:14px;color:#0d5c35;font-weight:600;width:100%;justify-content:center}
+.med-block{background:#f7f9fc;border:1.5px solid #e8edf3;border-radius:14px;padding:14px;margin-bottom:10px;position:relative}
+.med-block-title{font-size:12px;font-weight:700;color:#1a7a4a;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.btn-rm-med{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:10px;border:1.5px solid #eee;background:#fff;color:#c0392b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:300}
+.lote-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.lote-toggle-btn{padding:9px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fafafa;font-size:13px;cursor:pointer;color:#888;text-align:center;font-weight:500;transition:all .15s}
+.lote-toggle-btn.active{border-color:#1a7a4a;background:#e8f5ee;color:#0d5c35;font-weight:600}
+.btn-add-med{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:13px;border:2px dashed #d0d8e0;background:transparent;color:#1a7a4a;font-size:15px;cursor:pointer;font-weight:600;margin-top:4px;transition:all .15s}
+.btn-add-med:active{background:#e8f5ee}
+.footer-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px}
+.btn-limpiar{padding:14px;border-radius:13px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:14px;font-weight:600;cursor:pointer}
+.btn-wa{padding:14px;border-radius:13px;border:none;background:#25a244;color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-guardar{padding:14px;border-radius:13px;border:none;background:#1a7a4a;color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+
+/* Chip scan */
+.chip-scan-area{border:2px dashed #1a7a4a;border-radius:14px;padding:16px;text-align:center;cursor:pointer;background:#f0faf5;margin-bottom:10px;transition:all .15s}
+.chip-scan-area:active{background:#e0f5ea}
+.chip-scan-icon{font-size:32px;margin-bottom:6px}
+.chip-scan-text{font-size:14px;color:#1a7a4a;font-weight:600}
+.chip-scan-sub{font-size:12px;color:#888;margin-top:3px}
+#chip-file-input{display:none}
+.ai-loading{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#e8f5ee;border-radius:12px;font-size:14px;color:#0d5c35;font-weight:500;margin-bottom:10px}
+.spinner{width:18px;height:18px;border:2px solid #b0ddc0;border-top-color:#1a7a4a;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Botiquín */
+.med-botiquin{padding:14px 0;border-bottom:1px solid #f0f0f0}
+.med-botiquin:last-child{border-bottom:none;padding-bottom:0}
+.med-botiquin-nombre{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:8px;line-height:1.35}
+.lote-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f9fc;border-radius:10px;margin-bottom:6px}
+.lote-item-info{flex:1}
+.lote-item-num{font-size:14px;font-weight:600;color:#1a1a1a}
+.lote-item-cad{font-size:12px;color:#888;margin-top:1px}
+.btn-lote-rm{width:30px;height:30px;border-radius:9px;border:1.5px solid #eee;background:#fff;color:#c0392b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.btn-lote-add{display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;border:1.5px dashed #ccc;background:transparent;color:#1a7a4a;font-size:13px;cursor:pointer;font-weight:600;margin-top:6px}
+.no-lotes{font-size:13px;color:#bbb;padding:4px 0 8px}
+
+/* Historial */
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:12px 16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.search-bar input{flex:1;border:none;background:none;font-size:15px;color:#1a1a1a;outline:none}
+.record-card{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.record-id{font-size:11px;color:#bbb;font-weight:600}
+.record-fecha{font-size:12px;color:#888}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:8px}
+.badge-chip{background:#e8f5ee;color:#0d5c35}
+.badge-nochip{background:#fff4e0;color:#7a4500}
+.motivo-tag{display:inline-block;padding:3px 9px;border-radius:12px;background:#e8f5ee;color:#0d5c35;font-size:11px;font-weight:600;margin:2px}
+.med-tag{display:inline-block;padding:5px 10px;border-radius:10px;background:#f2f4f7;color:#555;font-size:12px;font-weight:500;margin:2px 2px 2px 0}
+.record-dx{font-size:12px;color:#999;margin-top:8px;line-height:1.4}
+.btn-del-rec{width:30px;height:30px;border-radius:9px;border:1.5px solid #eee;background:#fff;color:#c0392b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.empty-state{text-align:center;padding:50px 20px;color:#ccc}
+.empty-state div{font-size:44px;margin-bottom:12px}
+.empty-state p{font-size:15px}
+
+/* Confirm */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:1000;padding:0 0 20px}
+.confirm-sheet{background:#fff;border-radius:22px 22px 18px 18px;padding:26px 22px 22px;width:100%;max-width:440px}
+.confirm-sheet h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.confirm-sheet p{font-size:14px;color:#666;margin-bottom:22px;line-height:1.5}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-cancel{padding:14px;border-radius:13px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:15px;font-weight:600;cursor:pointer}
+.btn-ok{padding:14px;border-radius:13px;border:none;background:#1a7a4a;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.btn-del{padding:14px;border-radius:13px;border:none;background:#c0392b;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+
+/* Toast */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:13px 22px;border-radius:22px;font-size:14px;font-weight:600;display:none;white-space:nowrap;z-index:2000;box-shadow:0 4px 20px rgba(0,0,0,.2);max-width:90vw;text-align:center}
+.toast.ok{background:#1a7a4a;color:#fff}
+.toast.warn{background:#c07800;color:#fff}
+.toast.err{background:#c0392b;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">💊 RECEVET · IAG</div>
+    <div class="topbar-sub">Prescripción / Dispensación veterinaria</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showTab('nueva')" id="tab-btn-nueva"><span class="tab-icon">✏️</span>Nueva</div>
+  <div class="tab" onclick="showTab('botiquin')" id="tab-btn-botiquin"><span class="tab-icon">🗄️</span>Botiquín</div>
+  <div class="tab" onclick="showTab('historial')" id="tab-btn-historial"><span class="tab-icon">📋</span>Historial</div>
+</div>
+
+<!-- ===== NUEVA ===== -->
+<div id="tab-nueva" class="content">
+
+  <div class="card">
+    <div class="row2" style="margin-bottom:12px">
+      <div class="field" style="margin-bottom:0"><label>Fecha</label><input type="date" id="fecha"></div>
+      <div class="field" style="margin-bottom:0"><label style="opacity:0">v</label><div class="vet-badge">🩺 IAG</div></div>
+    </div>
+    <div class="card-title" style="margin-bottom:8px">Identificación</div>
+    <div class="tipo-row">
+      <button class="tipo-btn active-chip" id="btn-chip" onclick="setTipo('chip')">🔬 Con microchip</button>
+      <button class="tipo-btn" id="btn-nochip" onclick="setTipo('nochip')">❓ Sin microchip</button>
+    </div>
+  </div>
+
+  <!-- CON CHIP -->
+  <div id="bloque-chip">
+    <div class="card">
+      <div class="card-title">Microchip</div>
+      <div class="chip-scan-area" onclick="document.getElementById('chip-file-input').click()">
+        <div class="chip-scan-icon">📷</div>
+        <div class="chip-scan-text">Fotografiar pasaporte / chip</div>
+        <div class="chip-scan-sub">La IA extrae el número automáticamente</div>
+      </div>
+      <input type="file" id="chip-file-input" accept="image/*" capture="environment" onchange="procesarFotoChip(this)">
+      <div id="chip-ai-loading" class="ai-loading" style="display:none">
+        <div class="spinner"></div> Leyendo microchip con IA...
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Nº microchip</label>
+        <input type="text" id="chip" placeholder="985000000000000" style="font-size:17px;letter-spacing:.04em" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9A-Za-z]/g,'')">
+      </div>
+    </div>
+  </div>
+
+  <!-- SIN CHIP -->
+  <div id="bloque-nochip" style="display:none">
+    <div class="card">
+      <div class="card-title">Motivo de no identificación</div>
+      <div class="motivos-wrap" id="motivos-wrap">
+        <div class="motivo-btn" data-v="Gato comunitario" onclick="toggleMotivo(this)">🐱 Gato comunitario</div>
+        <div class="motivo-btn" data-v="Abandonado/extraviado" onclick="toggleMotivo(this)">📍 Abandonado</div>
+        <div class="motivo-btn" data-v="Titular sin identificar" onclick="toggleMotivo(this)">❓ Sin titular</div>
+        <div class="motivo-btn" data-v="Continuación tratamiento botiquín" onclick="toggleMotivo(this)">💊 Continuación tto.</div>
+        <div class="motivo-btn" data-v="Cachorro/menor edad" onclick="toggleMotivo(this)">🐶 Cachorro</div>
+        <div class="motivo-btn" data-v="__otro__" onclick="toggleMotivo(this)">➕ Otro</div>
+      </div>
+      <div id="otro-wrap" style="display:none"><div class="field"><label>Especificar</label><input type="text" id="motivo-otro" placeholder="Describe el motivo..."></div></div>
+      <div class="field" style="margin-bottom:0"><label>Justificación</label><textarea id="justificacion" placeholder="Justificación del caso..."></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Animal</div>
+      <div class="row2">
+        <div class="field"><label>Especie</label>
+          <select id="especie"><option value="">—</option><option>Perro</option><option>Gato</option><option>Conejo</option><option>Ave</option><option>Équido</option><option>Bovino</option><option>Ovino</option><option>Porcino</option><option>Otro</option></select>
+        </div>
+        <div class="field"><label>Nombre</label><input type="text" id="animal-nombre" placeholder="s/n"></div>
+        <div class="field"><label>Raza / tipo</label><input type="text" id="raza" placeholder="Mestizo..."></div>
+        <div class="field"><label>Sexo</label>
+          <select id="sexo"><option value="">—</option><option>Macho entero</option><option>Hembra entera</option><option>Macho castrado</option><option>Hembra esterilizada</option></select>
+        </div>
+        <div class="field"><label>Edad aprox.</label><input type="text" id="edad" placeholder="2 años"></div>
+        <div class="field"><label>Peso (kg)</label><input type="number" id="peso" min="0" step="0.1" placeholder="0.0" inputmode="decimal"></div>
+        <div class="field"><label>Capa / color</label><input type="text" id="capa" placeholder="Negro..."></div>
+        <div class="field"><label>Señas particulares</label><input type="text" id="senyas" placeholder="Cicatriz..."></div>
+      </div>
+      <div class="field" style="margin-bottom:0"><label>Localidad / zona / colonia</label><input type="text" id="localidad-animal" placeholder="Municipio, colonia, zona..."></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Responsable</div>
+      <div class="field"><label>Nombre completo</label><input type="text" id="resp-nombre" placeholder="Nombre y apellidos"></div>
+      <div class="row2">
+        <div class="field"><label>DNI / NIF</label><input type="text" id="resp-dni" placeholder="12345678A"></div>
+        <div class="field"><label>Teléfono</label><input type="tel" id="resp-tel" placeholder="600 000 000"></div>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="resp-email" placeholder="correo@ejemplo.com"></div>
+      <div class="field"><label>Entidad / Ayuntamiento</label><input type="text" id="resp-entidad" placeholder="Protectora..."></div>
+      <div class="field"><label>Dirección</label><input type="text" id="resp-dir" placeholder="Calle, nº..."></div>
+      <div class="row3">
+        <div class="field"><label>CP</label><input type="text" id="resp-cp" placeholder="18000" maxlength="5" inputmode="numeric"></div>
+        <div class="field"><label>Localidad</label><input type="text" id="resp-loc" placeholder="Granada"></div>
+        <div class="field"><label>Provincia</label><input type="text" id="resp-prov" placeholder="Granada"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDICAMENTOS -->
+  <div class="card">
+    <div class="card-title">Medicamento(s)</div>
+    <div id="presc-meds"></div>
+    <button class="btn-add-med" onclick="addPrescMed()" type="button">＋ Añadir medicamento</button>
+  </div>
+
+  <!-- PROCESO -->
+  <div class="card">
+    <div class="card-title">Proceso y observaciones</div>
+    <div class="field"><label>Proceso morboso</label><input type="text" id="proceso" placeholder="Infección bacteriana..."></div>
+    <div class="field" style="margin-bottom:0"><label>Observaciones</label><input type="text" id="obs" placeholder="Instrucciones, seguimiento..."></div>
+  </div>
+
+  <div class="footer-btns">
+    <button class="btn-limpiar" onclick="limpiar()" type="button">🔄 Limpiar</button>
+    <button class="btn-wa" onclick="enviarWA()" type="button">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WA
+    </button>
+    <button class="btn-guardar" onclick="guardar()" type="button">💾 Guardar</button>
+  </div>
+</div>
+
+<!-- ===== BOTIQUÍN ===== -->
+<div id="tab-botiquin" class="content" style="display:none">
+  <div class="card">
+    <div class="card-title">Medicamentos y lotes</div>
+    <div id="botiquin-list"></div>
+  </div>
+</div>
+
+<!-- ===== HISTORIAL ===== -->
+<div id="tab-historial" class="content" style="display:none">
+  <div class="search-bar">
+    <span style="font-size:18px">🔍</span>
+    <input type="search" id="buscar" placeholder="Chip, medicamento, nombre..." oninput="renderHistorial()">
+    <span id="cnt" style="font-size:12px;color:#bbb;white-space:nowrap"></span>
+  </div>
+  <div id="records-list"></div>
+</div>
+
+<!-- CONFIRM -->
+<div class="confirm-overlay" id="confirm-overlay" style="display:none" onclick="closeConfirmOutside(event)">
+  <div class="confirm-sheet">
+    <h3 id="confirm-title"></h3>
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns" id="confirm-btns"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY='recevet_iag_v4';
+const BOT_KEY='recevet_botiquin_v4';
+const WA_NUM='34958129841';
+let tipoActual='chip', prescMedCount=0;
+
+const MEDS=[
+  'CEPHACARE SABOR 250 mg COMPRIMIDOS PARA PERROS',
+  'CLAVUSAN 250 mg + 62,5 mg COMPRIMIDOS PARA PERROS Y GATOS',
+  'CLINDASEPTIN 25 mg/ml SOLUCION ORAL PARA GATOS Y PERROS',
+  'EASOTIC GOTAS OTICAS EN SUSPENSION PARA PERROS',
+  'EUPENCLAV 50 COMPRIMIDOS',
+  'ISADERM GEL PARA PERROS',
+  'METROBACTIN 250 mg COMPRIMIDOS PARA PERROS Y GATOS',
+  'METROBACTIN 500 mg COMPRIMIDOS PARA PERROS Y GATOS',
+  'NICILAN 200 mg/50 mg COMPRIMIDOS PARA PERROS',
+  'NICILAN 400 mg/100 mg COMPRIMIDOS PARA PERROS',
+  'STOMORGYL 10 kg 750.000 UI / 125 mg COMPRIMIDOS RECUBIERTOS'
+];
+const VIAS=['Oral','Intramuscular','Subcutáneo','Intravenoso','Tópico','Ocular','Ótico'];
+
+function loadBotiquin(){
+  try{const d=localStorage.getItem(BOT_KEY);return d?JSON.parse(d):MEDS.map(n=>({nombre:n,lotes:[]}));}
+  catch(e){return MEDS.map(n=>({nombre:n,lotes:[]}));}
+}
+function saveBotiquin(b){try{localStorage.setItem(BOT_KEY,JSON.stringify(b));}catch(e){}}
+function loadRecords(){try{const d=localStorage.getItem(STORAGE_KEY);return d?JSON.parse(d):[]}catch(e){return[];}}
+function saveRecords(r){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(r));}catch(e){}}
+
+let botiquin=loadBotiquin();
+let records=loadRecords();
+
+function showTab(t){
+  ['nueva','botiquin','historial'].forEach(id=>{
+    document.getElementById('tab-'+id).style.display=id===t?'block':'none';
+    document.getElementById('tab-btn-'+id).classList.toggle('active',id===t);
+  });
+  if(t==='botiquin')renderBotiquin();
+  if(t==='historial')renderHistorial();
+  window.scrollTo(0,0);
+}
+
+function setTipo(t){
+  tipoActual=t;
+  document.getElementById('bloque-chip').style.display=t==='chip'?'block':'none';
+  document.getElementById('bloque-nochip').style.display=t==='nochip'?'block':'none';
+  document.getElementById('btn-chip').className='tipo-btn'+(t==='chip'?' active-chip':'');
+  document.getElementById('btn-nochip').className='tipo-btn'+(t==='nochip'?' active-nochip':'');
+}
+
+function toggleMotivo(el){
+  el.classList.toggle('sel');
+  document.getElementById('otro-wrap').style.display=
+    document.querySelector('.motivo-btn[data-v="__otro__"].sel')?'block':'none';
+}
+function getMotivos(){
+  return Array.from(document.querySelectorAll('.motivo-btn.sel'))
+    .map(b=>b.dataset.v==='__otro__'?(v('motivo-otro')||'Otro'):b.dataset.v);
+}
+
+// ===== FOTO CHIP CON IA =====
+async function procesarFotoChip(input){
+  const file=input.files[0];
+  if(!file)return;
+  const loading=document.getElementById('chip-ai-loading');
+  loading.style.display='flex';
+  try{
+    const base64=await fileToBase64(file);
+    const mediaType=file.type||'image/jpeg';
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:200,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+            {type:'text',text:'Esta es una foto de un pasaporte veterinario o ficha de animal. Extrae SOLO el número de microchip (15 dígitos numéricos normalmente). Responde ÚNICAMENTE con el número, sin texto adicional. Si no encuentras ningún número de microchip, responde exactamente: NO_ENCONTRADO'}
+          ]
+        }]
+      })
+    });
+    const data=await response.json();
+    const texto=(data.content&&data.content[0]&&data.content[0].text)||'NO_ENCONTRADO';
+    const chip=texto.trim().replace(/[^0-9A-Za-z]/g,'');
+    if(chip&&chip!=='NOENCONTRADO'&&chip.length>=6){
+      document.getElementById('chip').value=chip;
+      showToast('✓ Microchip leído: '+chip,'ok');
+    } else {
+      showToast('No se detectó microchip, introdúcelo manualmente','warn');
+    }
+  }catch(e){
+    showToast('Error al procesar la imagen','err');
+  }
+  loading.style.display='none';
+  input.value='';
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ===== MEDICAMENTOS PRESCRIPCIÓN =====
+function addPrescMed(){
+  prescMedCount++;
+  const id='pm-'+prescMedCount;
+  const n=prescMedCount;
+  const div=document.createElement('div');
+  div.className='med-block';
+  div.id=id;
+
+  const medOpts=botiquin.map((m,i)=>`<option value="${i}">${m.nombre}</option>`).join('');
+
+  div.innerHTML=`
+    <div class="med-block-title">Medicamento ${n}</div>
+    <button class="btn-rm-med" onclick="rmPrescMed('${id}')" type="button">✕</button>
+    <div class="field">
+      <label>Medicamento</label>
+      <select class="pm-nom">
+        <option value="">Seleccionar...</option>
+        ${medOpts}
+        <option value="__manual__">Otro (escribir)</option>
+      </select>
+    </div>
+    <div class="field pm-manual-wrap" style="display:none">
+      <label>Nombre manual</label>
+      <input type="text" class="pm-manual-inp" placeholder="Nombre del medicamento...">
+    </div>
+    <div class="field">
+      <label>Lote</label>
+      <div class="lote-toggle">
+        <div class="lote-toggle-btn active lote-btn-lista" onclick="setLoteModo('${id}','lista')">De botiquín</div>
+        <div class="lote-toggle-btn lote-btn-manual" onclick="setLoteModo('${id}','manual')">Escribir a mano</div>
+      </div>
+      <div class="lote-lista-wrap">
+        <select class="pm-lote-sel"><option value="">— sin lotes —</option></select>
+      </div>
+      <div class="lote-manual-wrap" style="display:none">
+        <input type="text" class="pm-lote-txt" placeholder="Nº lote...">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Cantidad</label><input type="text" class="pm-cant" placeholder="1 envase"></div>
+      <div class="field"><label>Presentación</label><input type="text" class="pm-pres" placeholder="Comprimidos..."></div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>Dosis</label><input type="text" class="pm-dosis" placeholder="10 mg/kg"></div>
+      <div class="field"><label>Vía</label>
+        <select class="pm-via"><option value="">—</option>${VIAS.map(vv=>`<option>${vv}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Días</label><input type="number" class="pm-dias" min="1" placeholder="7" inputmode="numeric"></div>
+    </div>`;
+
+  // Listener cambio medicamento
+  div.querySelector('.pm-nom').addEventListener('change',function(){
+    const isManual=this.value==='__manual__';
+    div.querySelector('.pm-manual-wrap').style.display=isManual?'block':'none';
+    const sel=div.querySelector('.pm-lote-sel');
+    sel.innerHTML='<option value="">— seleccionar lote —</option>';
+    if(!isManual&&this.value!==''){
+      const mi=parseInt(this.value);
+      const med=botiquin[mi];
+      if(med&&med.lotes&&med.lotes.length){
+        med.lotes.forEach(l=>{
+          const o=document.createElement('option');
+          o.value=l.lote;
+          o.textContent=l.lote+(l.caducidad?' (cad:'+l.caducidad+')':'');
+          sel.appendChild(o);
+        });
+      }
+    }
+  });
+
+  document.getElementById('presc-meds').appendChild(div);
+}
+
+function setLoteModo(id,modo){
+  const d=document.getElementById(id);
+  d.querySelector('.lote-btn-lista').classList.toggle('active',modo==='lista');
+  d.querySelector('.lote-btn-manual').classList.toggle('active',modo==='manual');
+  d.querySelector('.lote-lista-wrap').style.display=modo==='lista'?'block':'none';
+  d.querySelector('.lote-manual-wrap').style.display=modo==='manual'?'block':'none';
+}
+
+function rmPrescMed(id){const e=document.getElementById(id);if(e)e.remove();}
+
+function getLote(d){
+  const manWrap=d.querySelector('.lote-manual-wrap');
+  if(manWrap&&manWrap.style.display!=='none') return d.querySelector('.pm-lote-txt').value;
+  return d.querySelector('.pm-lote-sel').value;
+}
+
+function getPrescMeds(){
+  return Array.from(document.querySelectorAll('.med-block')).map(d=>{
+    const sel=d.querySelector('.pm-nom').value;
+    let nombre='';
+    if(sel==='__manual__') nombre=d.querySelector('.pm-manual-inp').value;
+    else if(sel!=='') nombre=botiquin[parseInt(sel)].nombre;
+    return{nombre,lote:getLote(d),cant:d.querySelector('.pm-cant').value,
+      pres:d.querySelector('.pm-pres').value,dosis:d.querySelector('.pm-dosis').value,
+      via:d.querySelector('.pm-via').value,dias:d.querySelector('.pm-dias').value};
+  }).filter(m=>m.nombre);
+}
+
+function v(id){return(document.getElementById(id)||{}).value||'';}
+
+function buildResumen(){
+  const meds=getPrescMeds();
+  let txt='🐾 *RECEVET · IAG*\n📅 Fecha: '+v('fecha')+'\n\n';
+  if(tipoActual==='chip'){
+    txt+='🔬 *Microchip:* '+v('chip')+'\n';
+  } else {
+    txt+='⚠️ *Sin microchip*\n';
+    const m=getMotivos();
+    if(m.length) txt+='Motivo: '+m.join(', ')+'\n';
+    txt+='Animal: '+(v('especie')||'—')+' '+v('animal-nombre')+' '+v('raza')+' '+v('sexo')+'\n';
+    txt+='Edad: '+v('edad')+'  Peso: '+v('peso')+' kg\n';
+    if(v('resp-nombre')) txt+='Responsable: '+v('resp-nombre')+'  DNI: '+v('resp-dni')+'\n';
+    if(v('resp-tel')) txt+='Tel: '+v('resp-tel')+'\n';
+    if(v('resp-dir')) txt+='Dir: '+v('resp-dir')+' '+v('resp-cp')+' '+v('resp-loc')+'\n';
+  }
+  txt+='\n💊 *Medicación:*\n';
+  meds.forEach((m,i)=>{
+    txt+=(i+1)+'. '+m.nombre+'\n';
+    if(m.pres) txt+='   Presentación: '+m.pres+'\n';
+    if(m.lote) txt+='   Lote: '+m.lote+'\n';
+    if(m.cant) txt+='   Cantidad: '+m.cant+'\n';
+    if(m.dosis) txt+='   Dosis: '+m.dosis+'\n';
+    if(m.via) txt+='   Vía: '+m.via+'\n';
+    if(m.dias) txt+='   Días: '+m.dias+'\n';
+  });
+  if(v('proceso')) txt+='\n🔍 Proceso: '+v('proceso');
+  if(v('obs')) txt+='\n📝 Obs: '+v('obs');
+  txt+='\n\n✅ Vet. IAG';
+  return txt;
+}
+
+function enviarWA(){
+  const meds=getPrescMeds();
+  if(!meds.length){showToast('Añade al menos un medicamento','warn');return;}
+  window.open('https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(buildResumen()),'_blank');
+  setTimeout(()=>{
+    showConfirm('¿Limpiar formulario?','El WhatsApp se ha abierto. ¿Limpiar el formulario ahora?',
+      [{label:'Conservar',cls:'btn-cancel',cb:null},{label:'Limpiar',cls:'btn-ok',cb:()=>limpiar()}]);
+  },600);
+}
+
+function guardar(){
+  const meds=getPrescMeds();
+  if(!meds.length){showToast('Añade al menos un medicamento','warn');return;}
+  let rec={id:'REC-'+Date.now(),fecha:v('fecha')||hoy(),tipo:tipoActual,meds,proceso:v('proceso'),obs:v('obs'),vet:'IAG'};
+  if(tipoActual==='chip'){
+    if(!v('chip').trim()){showToast('Introduce el nº de microchip','warn');return;}
+    rec.chip=v('chip').trim();
+  } else {
+    const motivos=getMotivos();
+    if(!motivos.length){showToast('Selecciona el motivo','warn');return;}
+    rec.motivos=motivos;rec.justificacion=v('justificacion');
+    rec.animal={especie:v('especie'),nombre:v('animal-nombre'),raza:v('raza'),sexo:v('sexo'),
+      edad:v('edad'),capa:v('capa'),peso:v('peso'),senyas:v('senyas'),localidad:v('localidad-animal')};
+    rec.resp={nombre:v('resp-nombre'),dni:v('resp-dni'),tel:v('resp-tel'),email:v('resp-email'),
+      dir:v('resp-dir'),cp:v('resp-cp'),loc:v('resp-loc'),prov:v('resp-prov'),entidad:v('resp-entidad')};
+  }
+  records.unshift(rec);
+  saveRecords(records);
+  showToast('Registro guardado ✓','ok');
+  limpiar();
+}
+
+function hoy(){return new Date().toISOString().split('T')[0];}
+
+function limpiar(){
+  ['chip','justificacion','animal-nombre','raza','edad','capa','peso','senyas','localidad-animal',
+   'resp-nombre','resp-dni','resp-tel','resp-email','resp-dir','resp-cp','resp-loc','resp-prov',
+   'resp-entidad','proceso','obs','motivo-otro'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['especie','sexo'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.querySelectorAll('.motivo-btn.sel').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('otro-wrap').style.display='none';
+  document.getElementById('presc-meds').innerHTML='';
+  prescMedCount=0;
+  document.getElementById('fecha').value=hoy();
+  setTipo('chip');
+  addPrescMed();
+  window.scrollTo(0,0);
+}
+
+// ===== BOTIQUÍN =====
+function renderBotiquin(){
+  const c=document.getElementById('botiquin-list');
+  c.innerHTML='';
+  botiquin.forEach((med,mi)=>{
+    const div=document.createElement('div');
+    div.className='med-botiquin';
+    let lotesHtml='';
+    if(!med.lotes||!med.lotes.length){
+      lotesHtml='<div class="no-lotes">Sin lotes registrados</div>';
+    } else {
+      lotesHtml=med.lotes.map((l,li)=>`
+        <div class="lote-item">
+          <div class="lote-item-info">
+            <div class="lote-item-num">🏷 ${l.lote}</div>
+            ${l.caducidad?`<div class="lote-item-cad">Cad: ${l.caducidad}</div>`:''}
+          </div>
+          <button class="btn-lote-rm" onclick="removeLote(${mi},${li})" type="button">🗑</button>
+        </div>`).join('');
+    }
+    div.innerHTML=`
+      <div class="med-botiquin-nombre">${med.nombre}</div>
+      <div id="lotes-${mi}">${lotesHtml}</div>
+      <button class="btn-lote-add" onclick="addLote(${mi})" type="button">＋ Añadir lote</button>`;
+    c.appendChild(div);
+  });
+}
+
+function addLote(mi){
+  const lote=prompt('Nº de lote:\n'+botiquin[mi].nombre.split(' ').slice(0,4).join(' ')+'...');
+  if(!lote||!lote.trim())return;
+  const cad=prompt('Caducidad (opcional, ej: 12/2026):');
+  botiquin[mi].lotes=botiquin[mi].lotes||[];
+  botiquin[mi].lotes.push({lote:lote.trim(),caducidad:cad&&cad.trim()?cad.trim():''});
+  saveBotiquin(botiquin);
+  renderBotiquin();
+  showToast('Lote añadido ✓','ok');
+}
+
+function removeLote(mi,li){
+  showConfirm('¿Eliminar lote?','Lote: '+botiquin[mi].lotes[li].lote,
+    [{label:'Cancelar',cls:'btn-cancel',cb:null},
+     {label:'Eliminar',cls:'btn-del',cb:()=>{botiquin[mi].lotes.splice(li,1);saveBotiquin(botiquin);renderBotiquin();showToast('Lote eliminado','ok');}}]);
+}
+
+// ===== HISTORIAL =====
+function renderHistorial(){
+  const q=v('buscar').toLowerCase();
+  const f=records.filter(r=>{
+    if(!q)return true;
+    const base=(r.chip||'')+(r.resp?r.resp.nombre:'')+(r.animal?r.animal.nombre+r.animal.especie:'')
+      +(r.motivos||[]).join(' ')+r.meds.map(m=>m.nombre+m.lote).join(' ')+r.proceso+r.id;
+    return base.toLowerCase().includes(q);
+  });
+  document.getElementById('cnt').textContent=f.length+' reg.';
+  const list=document.getElementById('records-list');
+  if(!f.length){
+    list.innerHTML='<div class="empty-state"><div>📋</div><p>Sin registros todavía</p></div>';
+    return;
+  }
+  list.innerHTML=f.map(r=>`
+    <div class="record-card">
+      <div class="record-top">
+        <div><div class="record-id">${r.id}</div><div class="record-fecha">${r.fecha} · IAG</div></div>
+        <button class="btn-del-rec" onclick="deleteRecord('${r.id}')" type="button">🗑</button>
+      </div>
+      <span class="badge ${r.tipo==='chip'?'badge-chip':'badge-nochip'}">${r.tipo==='chip'?'🔬 '+r.chip:'❓ Sin microchip'}</span>
+      ${r.tipo==='nochip'&&r.animal?`<div style="font-size:14px;font-weight:600;margin-bottom:6px">${r.animal.especie||''} ${r.animal.nombre?'· '+r.animal.nombre:''}</div>`:''}
+      ${r.tipo==='nochip'&&r.motivos?`<div style="margin-bottom:6px">${r.motivos.map(m=>`<span class="motivo-tag">${m}</span>`).join('')}</div>`:''}
+      ${r.tipo==='nochip'&&r.resp&&r.resp.nombre?`<div style="font-size:13px;color:#666;margin-bottom:8px">👤 ${r.resp.nombre}${r.resp.dni?' · '+r.resp.dni:''}</div>`:''}
+      <div>${r.meds.map(m=>`<span class="med-tag">💊 ${m.nombre.split(' ').slice(0,3).join(' ')}${m.lote?' ['+m.lote+']':''} ${m.cant?'×'+m.cant:''} ${m.dias?m.dias+'d':''}</span>`).join('')}</div>
+      ${r.proceso?`<div class="record-dx">Dx: ${r.proceso}${r.obs?' · '+r.obs:''}</div>`:''}
+    </div>`).join('');
+}
+
+function deleteRecord(id){
+  showConfirm('¿Eliminar registro?','Se borrará permanentemente.',
+    [{label:'Cancelar',cls:'btn-cancel',cb:null},
+     {label:'Eliminar',cls:'btn-del',cb:()=>{records=records.filter(r=>r.id!==id);saveRecords(records);renderHistorial();showToast('Eliminado','ok');}}]);
+}
+
+// ===== CONFIRM =====
+function showConfirm(title,msg,btns){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-msg').textContent=msg;
+  const bc=document.getElementById('confirm-btns');bc.innerHTML='';
+  btns.forEach(b=>{
+    const el=document.createElement('button');
+    el.textContent=b.label;el.className=b.cls;el.type='button';
+    el.onclick=()=>{closeConfirm();if(b.cb)b.cb();};
+    bc.appendChild(el);
+  });
+  document.getElementById('confirm-overlay').style.display='flex';
+}
+function closeConfirm(){document.getElementById('confirm-overlay').style.display='none';}
+function closeConfirmOutside(e){if(e.target.id==='confirm-overlay')closeConfirm();}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'ok');
+  t.style.display='block';
+  setTimeout(()=>{t.style.display='none';},2500);
+}
+
+// INIT
+document.getElementById('fecha').value=hoy();
+addPrescMed();
+</script>
+</body>
+</html>
