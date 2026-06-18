@@ -374,6 +374,7 @@ function addBote(){
   document.getElementById('b-vol').value='100';
   document.getElementById('b-ref').value='';
   renderBotes();populateBoteSelect();
+  saveLocal();
   showTab('inyeccion');
 }
 
@@ -396,7 +397,7 @@ function renderBotes(){
   }).join('');
 }
 
-function delBote(i){if(!confirm('¿Eliminar este bote?'))return;botes.splice(i,1);renderBotes();populateBoteSelect();}
+function delBote(i){if(!confirm('¿Eliminar este bote?'))return;botes.splice(i,1);renderBotes();populateBoteSelect();saveLocal();}
 
 function populateBoteSelect(){
   let sel=document.getElementById('f-bote');
@@ -417,25 +418,28 @@ function refreshMetrics(){
   fill.style.background=pct>40?'var(--green)':pct>15?'var(--amber)':'var(--red)';
 }
 
-async function saveToSheets(entry){
+function sendWhatsApp(entry){
+  let cadFmt=entry.cad?entry.cad.split('-').reverse().slice(0,2).join('/'):'—';
+  let adminLabel=entry.nadmin;
+  let txt='🐾 *REGISTRO ANTIBIÓTICO*\n'
+    +'📅 Fecha: '+fmtDate(entry.fecha)+'\n'
+    +'🔢 Microchip: '+entry.chip+'\n'
+    +'💉 Medicamento: AMOXOIL RETARD 150 mg/ml\n'
+    +'📦 Lote: '+entry.lote+'\n'
+    +'📆 Cad: '+cadFmt+'\n'
+    +'🩺 Vía: Intramuscular\n'
+    +'⚗️ Cantidad: '+entry.ml.toFixed(1)+' ml\n'
+    +'🦠 Proceso: '+(entry.proceso||'—')+'\n'
+    +'📋 '+adminLabel+'\n'
+    +(entry.obs?'📝 Obs: '+entry.obs:'');
+  let url='https://wa.me/34653594635?text='+encodeURIComponent(txt);
   let statusEl=document.getElementById('save-status');
   statusEl.style.display='flex';
-  statusEl.className='save-status save-ing';
-  statusEl.innerHTML='<div class="dot"></div> Guardando en Sheets...';
-  let cadFmt=entry.cad?entry.cad.split('-').reverse().slice(0,2).join('/'):'';
-  let row=[fmtDate(entry.fecha),entry.chip,entry.animal,entry.especie,entry.propietario||'','AMOXOIL RETARD 150 mg/ml',entry.lote,cadFmt,'Intramuscular',entry.ml.toFixed(1),entry.proceso||'',entry.nadmin,entry.obs||''];
-  try{
-    await callClaude([{role:'user',content:`Añade esta fila a la Google Sheet con ID "${SHEET_ID}" en la siguiente fila disponible tras los encabezados:\n${row.map((v,i)=>String.fromCharCode(65+i)+': '+v).join('\n')}\nConfirma cuando esté hecho.`}],500,[{type:'url',url:'https://drivemcp.googleapis.com/mcp/v1',name:'gdrive'}]);
-    statusEl.className='save-status save-ok';
-    statusEl.innerHTML='<i class="ti ti-check" style="font-size:16px"></i> Guardado en Google Sheets';
-    setTimeout(()=>statusEl.style.display='none',3000);
-  }catch(e){
-    statusEl.className='save-status save-err';
-    statusEl.innerHTML='<i class="ti ti-alert-circle" style="font-size:16px"></i> Error al guardar en Sheets';
-  }
+  statusEl.className='save-status save-ok';
+  statusEl.innerHTML='<i class="ti ti-brand-whatsapp" style="font-size:16px;color:#25D366"></i> <a href="'+url+'" target="_blank" style="color:var(--green-dark);font-weight:600;">Pulsa aquí para enviar por WhatsApp</a>';
 }
 
-async function addEntry(){
+function addEntry(){
   let chip=String(document.getElementById('f-chip').value).trim();
   let fecha=document.getElementById('f-fecha').value;
   let ml=parseFloat(document.getElementById('f-ml').value);
@@ -460,7 +464,8 @@ async function addEntry(){
   entries.push(entry);
   refreshMetrics();populateBoteSelect();
   renderCopy(entry);
-  await saveToSheets(entry);
+  sendWhatsApp(entry);
+  saveLocal();
   clearForm();
 }
 
@@ -492,7 +497,7 @@ function delEntry(i){
   let e=entries[i];
   let b=botes.find(b=>b.lote===e.lote);
   if(b)b.usado=Math.max(0,parseFloat((b.usado-e.ml).toFixed(2)));
-  entries.splice(i,1);refreshMetrics();populateBoteSelect();renderLog();
+  entries.splice(i,1);refreshMetrics();populateBoteSelect();renderLog();saveLocal();
 }
 
 function renderCopy(e){
@@ -514,6 +519,26 @@ function fmtDate(s){if(!s)return'—';let[y,m,d]=s.split('-');return d+'/'+m+'/'
 function fmtMes(s){if(!s)return'—';let[y,m]=s.split('-');return m+'/'+y;}
 function esc(s){return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'—';}
 
+function saveLocal(){
+  try{
+    localStorage.setItem('botes',JSON.stringify(botes));
+    localStorage.setItem('animales',JSON.stringify(animales));
+    localStorage.setItem('entries',JSON.stringify(entries));
+  }catch(e){}
+}
+
+function loadLocal(){
+  try{
+    let b=localStorage.getItem('botes');
+    let a=localStorage.getItem('animales');
+    let en=localStorage.getItem('entries');
+    if(b)botes=JSON.parse(b);
+    if(a)animales=JSON.parse(a);
+    if(en)entries=JSON.parse(en);
+  }catch(e){}
+}
+
+loadLocal();
 populateBoteSelect();
 </script>
 </body>
