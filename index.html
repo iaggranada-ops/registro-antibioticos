@@ -257,7 +257,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const SHEET_ID='17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY';
-let ANTHROPIC_KEY='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';
+let ANTHROPIC_KEY='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';
 let botes=[],entries=[],animales={};
 
 document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
@@ -284,11 +284,7 @@ function showTab(t){
 }
 
 async function callClaude(messages,maxTokens,mcpServers){
-  if(!ANTHROPIC_KEY){
-    let key=prompt('Para esta función necesitas una API key de Anthropic (sk-ant-...).\nObtenla en console.anthropic.com:');
-    if(key&&key.trim().startsWith('sk-')){ANTHROPIC_KEY=key.trim();localStorage.setItem('anthropic_key',ANTHROPIC_KEY);}
-    else throw new Error('Sin API key');
-  }
+  if(!ANTHROPIC_KEY){throw new Error('sin API key');}
   let body={model:'claude-sonnet-4-6',max_tokens:maxTokens||500,messages};
   if(mcpServers)body.mcp_servers=mcpServers;
   let res=await fetch('https://api.anthropic.com/v1/messages',{
@@ -297,8 +293,10 @@ async function callClaude(messages,maxTokens,mcpServers){
     body:JSON.stringify(body)
   });
   if(!res.ok){
-    if(res.status===401){ANTHROPIC_KEY='';localStorage.removeItem('anthropic_key');throw new Error('API key incorrecta');}
-    throw new Error('Error API: '+res.status);
+    let msg='error '+res.status;
+    try{let j=await res.json();if(j.error&&j.error.message)msg=j.error.message;}catch(e){}
+    if(res.status===401)msg='API key incorrecta';
+    throw new Error(msg);
   }
   return res.json();
 }
@@ -309,31 +307,52 @@ async function handlePhoto(input){
   let previewEl=document.getElementById('photo-preview');
   let scanEl=document.getElementById('scanning-state');
   let labelEl=document.getElementById('photo-label');
+  let hintEl=document.getElementById('chip-hint');
   let reader=new FileReader();
-  reader.onload=async function(e){
-    let dataUrl=e.target.result;
-    previewEl.src=dataUrl;previewEl.style.display='block';
-    scanEl.style.display='block';labelEl.textContent='Analizando...';
-    let base64=dataUrl.split(',')[1];
-    let mediaType=file.type||'image/jpeg';
-    try{
-      let data=await callClaude([{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-        {type:'text',text:'Extrae el número de microchip de esta imagen (pasaporte animal, lector de chip, o programa de gestión veterinaria). Normalmente son 15 dígitos numéricos. Responde ÚNICAMENTE con el número, sin espacios ni guiones. Si no lo encuentras responde exactamente: NO_ENCONTRADO'}
-      ]}],200);
-      let chip=(data.content&&data.content[0]&&data.content[0].text||'').trim();
-      scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
-      if(chip==='NO_ENCONTRADO'||!chip){
-        document.getElementById('chip-hint').textContent='No encontrado — introdúcelo manualmente.';
-      } else {
-        document.getElementById('f-chip').value=chip;
-        document.getElementById('chip-hint').textContent='✓ Capturado desde imagen';
-        buscarChip(chip);
+  reader.onload=function(e){
+    let img=new Image();
+    img.onload=async function(){
+      // Redimensionar la imagen para que no sea demasiado grande
+      let maxDim=1600;
+      let w=img.width,h=img.height;
+      if(w>maxDim||h>maxDim){
+        if(w>h){h=Math.round(h*maxDim/w);w=maxDim;}
+        else{w=Math.round(w*maxDim/h);h=maxDim;}
       }
-    }catch(e){
+      let canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      let jpegDataUrl=canvas.toDataURL('image/jpeg',0.85);
+      let base64=jpegDataUrl.split(',')[1];
+
+      previewEl.src=jpegDataUrl;previewEl.style.display='block';
+      scanEl.style.display='block';labelEl.textContent='Analizando...';
+      hintEl.textContent='';
+
+      try{
+        let data=await callClaude([{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
+          {type:'text',text:'Extrae el número de microchip de esta imagen (pasaporte animal, lector de chip, o programa de gestión veterinaria). Normalmente son 15 dígitos numéricos. Responde ÚNICAMENTE con el número, sin espacios ni guiones. Si no lo encuentras responde exactamente: NO_ENCONTRADO'}
+        ]}],200);
+        let chip=(data.content&&data.content[0]&&data.content[0].text||'').trim();
+        scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
+        if(chip==='NO_ENCONTRADO'||!chip){
+          hintEl.textContent='No se detectó el chip en la foto — introdúcelo a mano.';
+        } else {
+          document.getElementById('f-chip').value=chip;
+          hintEl.textContent='✓ Capturado: '+chip;
+          buscarChip(chip);
+        }
+      }catch(err){
+        scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
+        hintEl.textContent='Error: '+(err.message||'no se pudo analizar')+' — introdúcelo a mano.';
+      }
+    };
+    img.onerror=function(){
       scanEl.style.display='none';labelEl.textContent='Capturar chip desde foto';
-      document.getElementById('chip-hint').textContent='Error al analizar — introdúcelo manualmente.';
-    }
+      hintEl.textContent='No se pudo leer la imagen — introdúcelo a mano.';
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
   input.value='';
