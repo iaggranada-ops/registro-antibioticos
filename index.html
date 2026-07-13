@@ -21,19 +21,27 @@
   --radius:12px;--radius-sm:8px;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px;}
+
+/* HEADER */
 .header{background:var(--green);color:#fff;padding:16px 16px 12px;position:sticky;top:0;z-index:100;}
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .header h1{font-size:17px;font-weight:600;letter-spacing:-0.3px;}
 .header-sub{font-size:12px;opacity:.8;}
 .sheets-btn{background:rgba(255,255,255,.2);border:none;border-radius:var(--radius-sm);padding:6px 10px;color:#fff;font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer;text-decoration:none;}
+
+/* TABS */
 .tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:73px;z-index:99;}
 .tab{flex:1;padding:12px 4px;font-size:12px;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent;}
 .tab i{font-size:20px;}
 .tab.active{color:var(--green);border-bottom:2px solid var(--green);}
 .panel{display:none;padding:16px;}.panel.active{display:block;}
+
+/* CARDS */
 .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:12px;}
 .card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
 .card-title i{color:var(--green);font-size:18px;}
+
+/* FORM */
 .field{margin-bottom:12px;}
 .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500;}
 .field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:16px;background:#fff;color:var(--text);-webkit-appearance:none;appearance:none;}
@@ -41,6 +49,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .field textarea{resize:none;height:72px;font-size:14px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .field-hint{font-size:11px;color:var(--text3);margin-top:4px;}
+
+/* CHIP */
 .chip-input-wrap{position:relative;}
 .chip-input-wrap input{padding-right:44px;}
 .chip-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;}
@@ -56,19 +66,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
 .preview-img{max-height:80px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-top:8px;}
+
+/* METRICS */
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
 .metric{background:var(--bg);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;}
 .metric .val{font-size:22px;font-weight:700;color:var(--text);}
 .metric .lbl{font-size:10px;color:var(--text2);margin-top:2px;}
 .saldo-bar{height:6px;background:var(--gray-light);border-radius:3px;margin-bottom:14px;overflow:hidden;}
 .saldo-fill{height:100%;border-radius:3px;transition:width .3s;}
+
+/* BUTTONS */
 .btn-primary{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
 .btn-primary:active{background:var(--green-dark);}
 .btn-secondary{width:100%;padding:12px;background:#fff;color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;}
 .btn-sm{padding:6px 12px;font-size:12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#fff;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+
+/* SAVE STATUS */
 .save-status{font-size:13px;display:flex;align-items:center;gap:6px;padding:10px 0;}
 .save-ok{color:var(--green-dark);}.save-err{color:var(--red-text);}.save-ing{color:var(--text2);}
+
+/* COPY BOX */
 .copy-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:12px;color:var(--text2);white-space:pre-wrap;font-family:monospace;line-height:1.6;margin-bottom:10px;}
+
+/* BOTE ROW */
 .bote-item{padding:12px 0;border-top:1px solid var(--border);}
 .bote-item:first-child{border-top:none;}
 .bote-header{display:flex;align-items:center;justify-content:space-between;}
@@ -82,6 +102,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-low{background:var(--red-light);color:var(--red-text);}
 .badge-vacio{background:var(--gray-light);color:var(--gray);}
 .btn-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 0 0 8px;line-height:1;}
+
+/* LOG ROW */
 .log-item{padding:12px 0;border-top:1px solid var(--border);}
 .log-item:first-child{border-top:none;}
 .log-header{display:flex;justify-content:space-between;align-items:start;}
@@ -89,6 +111,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .log-ml{font-size:15px;font-weight:700;color:var(--green);}
 .log-meta{font-size:12px;color:var(--text2);margin-top:3px;}
 .log-obs{font-size:12px;color:var(--text3);margin-top:4px;font-style:italic;}
+
 .empty{text-align:center;color:var(--text3);font-size:14px;padding:24px 0;}
 .sep{border:none;border-top:1px solid var(--border);margin:14px 0;}
 </style>
@@ -109,14 +132,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('inyeccion')"><i class="ti ti-syringe"></i> Inyección</button>
-  <button class="tab" onclick="showTab('botes')"><i class="ti ti-package"></i> Botes</button>
-  <button class="tab" onclick="showTab('historial')"><i class="ti ti-list"></i> Historial</button>
+  <button class="tab active" onclick="showTab('inyeccion')">
+    <i class="ti ti-syringe"></i> Inyección
+  </button>
+  <button class="tab" onclick="showTab('botes')">
+    <i class="ti ti-package"></i> Botes
+  </button>
+  <button class="tab" onclick="showTab('historial')">
+    <i class="ti ti-list"></i> Historial
+  </button>
 </div>
 
+<!-- INYECCIÓN -->
 <div class="panel active" id="tab-inyeccion">
+
   <div class="card">
     <div class="card-title"><i class="ti ti-paw"></i> Animal</div>
+
     <div class="field">
       <label>Nº microchip</label>
       <div class="chip-input-wrap">
@@ -125,19 +157,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <div class="field-hint" id="chip-hint"></div>
     </div>
+
     <label class="photo-btn">
       <i class="ti ti-camera"></i>
       <span id="photo-label">Capturar chip desde foto</span>
       <input type="file" accept="image/*" capture="environment" onchange="handlePhoto(this)">
     </label>
+
     <div id="scanning-state" style="display:none">
       <div class="scanning"><div class="dot"></div> Analizando imagen con IA...</div>
     </div>
     <img id="photo-preview" class="preview-img" style="display:none">
+
     <div id="animal-found" class="animal-found" style="display:none">
       <div class="name" id="af-name"></div>
       <div class="meta" id="af-meta"></div>
     </div>
+
     <div id="animal-new" class="animal-new" style="display:none">
       <div class="animal-new-hint">Chip no registrado anteriormente — se guardará automáticamente.</div>
     </div>
@@ -145,11 +181,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="card">
     <div class="card-title"><i class="ti ti-calendar"></i> Administración</div>
+
     <div class="field-row">
       <div class="field"><label>Fecha</label><input id="f-fecha" type="date"></div>
       <div class="field"><label>Cantidad (ml)</label><input id="f-ml" type="number" inputmode="decimal" step="0.1" min="0.1" placeholder="Ej: 2.5"></div>
     </div>
+
     <div class="field"><label>Proceso morboso</label><input id="f-proceso" placeholder="Ej: Pioderma superficial..."></div>
+
     <div class="field-row">
       <div class="field"><label>Nº administración</label>
         <select id="f-nadmin">
@@ -161,7 +200,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <div class="field"><label>Bote</label><select id="f-bote" onchange="refreshMetrics()"></select></div>
     </div>
+
     <div class="field"><label>Observaciones</label><textarea id="f-obs" placeholder="Ej: Buena tolerancia..."></textarea></div>
+
     <div class="sep"></div>
     <div class="metrics">
       <div class="metric"><div class="val" id="m-total">—</div><div class="lbl">ml totales</div></div>
@@ -169,8 +210,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="metric"><div class="val" id="m-saldo">—</div><div class="lbl">ml restantes</div></div>
     </div>
     <div class="saldo-bar"><div class="saldo-fill" id="saldo-fill" style="width:100%;background:var(--green);"></div></div>
+
     <button class="btn-primary" onclick="addEntry()"><i class="ti ti-plus"></i> Registrar inyección</button>
     <button class="btn-secondary" onclick="clearForm()"><i class="ti ti-refresh"></i> Limpiar</button>
+
     <div class="save-status" id="save-status" style="display:none"></div>
   </div>
 
@@ -183,6 +226,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- BOTES -->
 <div class="panel" id="tab-botes">
   <div class="card">
     <div class="card-title"><i class="ti ti-plus"></i> Añadir bote</div>
@@ -200,6 +244,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- HISTORIAL -->
 <div class="panel" id="tab-historial">
   <div class="card">
     <div class="card-title" style="justify-content:space-between;">
@@ -212,8 +257,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const SHEET_ID='17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY';
-const WA_NUM='34858814659';
-let ANTHROPIC_KEY=localStorage.getItem('anthropic_key')||'';
+let ANTHROPIC_KEY='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';
 let botes=[],entries=[],animales={};
 
 document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
@@ -224,7 +268,7 @@ function setApiKey(){
   if(key&&key.trim().startsWith('sk-')){
     ANTHROPIC_KEY=key.trim();
     localStorage.setItem('anthropic_key',ANTHROPIC_KEY);
-    alert('✓ API key guardada.');
+    alert('✓ API key guardada. Ya puedes capturar chips por foto y guardar en Sheets.');
   } else if(key!==null){
     alert('La API key debe empezar por sk-');
   }
@@ -239,16 +283,18 @@ function showTab(t){
   if(t==='historial')renderLog();
 }
 
-async function callClaude(messages,maxTokens){
+async function callClaude(messages,maxTokens,mcpServers){
   if(!ANTHROPIC_KEY){
     let key=prompt('Para esta función necesitas una API key de Anthropic (sk-ant-...).\nObtenla en console.anthropic.com:');
     if(key&&key.trim().startsWith('sk-')){ANTHROPIC_KEY=key.trim();localStorage.setItem('anthropic_key',ANTHROPIC_KEY);}
     else throw new Error('Sin API key');
   }
+  let body={model:'claude-sonnet-4-6',max_tokens:maxTokens||500,messages};
+  if(mcpServers)body.mcp_servers=mcpServers;
   let res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTokens||500,messages})
+    body:JSON.stringify(body)
   });
   if(!res.ok){
     if(res.status===401){ANTHROPIC_KEY='';localStorage.removeItem('anthropic_key');throw new Error('API key incorrecta');}
@@ -327,7 +373,9 @@ function addBote(){
   document.getElementById('b-cad').value='';
   document.getElementById('b-vol').value='100';
   document.getElementById('b-ref').value='';
-  renderBotes();populateBoteSelect();saveLocal();showTab('inyeccion');
+  renderBotes();populateBoteSelect();
+  saveLocal();
+  showTab('inyeccion');
 }
 
 function renderBotes(){
@@ -372,6 +420,7 @@ function refreshMetrics(){
 
 function sendWhatsApp(entry){
   let cadFmt=entry.cad?entry.cad.split('-').reverse().slice(0,2).join('/'):'—';
+  let adminLabel=entry.nadmin;
   let txt='🐾 *REGISTRO ANTIBIÓTICO*\n'
     +'📅 Fecha: '+fmtDate(entry.fecha)+'\n'
     +'🔢 Microchip: '+entry.chip+'\n'
@@ -381,9 +430,9 @@ function sendWhatsApp(entry){
     +'🩺 Vía: Intramuscular\n'
     +'⚗️ Cantidad: '+entry.ml.toFixed(1)+' ml\n'
     +'🦠 Proceso: '+(entry.proceso||'—')+'\n'
-    +'📋 '+entry.nadmin+'\n'
+    +'📋 '+adminLabel+'\n'
     +(entry.obs?'📝 Obs: '+entry.obs:'');
-  let url='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(txt);
+  let url='whatsapp://send?phone=34653594635&text='+encodeURIComponent(txt);
   let statusEl=document.getElementById('save-status');
   statusEl.style.display='flex';
   statusEl.className='save-status save-ok';
@@ -429,7 +478,7 @@ function clearForm(){
 
 function renderLog(){
   let el=document.getElementById('log-list');
-  if(!entries.length){el.innerHTML='<div class="empty">Sin registros en esta sesión.<br><br><a href="https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/edit" target="_blank" style="color:var(--green)">Ver historial completo en Google Sheets</a></div>';return;}
+  if(!entries.length){el.innerHTML='<div class="empty">Sin registros en esta sesión.<br><br><a href="https://docs.google.com/spreadsheets/d/17t7nfzFDmAmvm6IwKdp_0Gy3xPaCMez9Fv3d7UkvQGY/edit" target="_blank" style="color:var(--green)">Ver historial completo en Google Sheets</a></div>';return;}
   el.innerHTML=[...entries].reverse().map((e,ri)=>{
     let i=entries.length-1-ri;
     return '<div class="log-item">'+
